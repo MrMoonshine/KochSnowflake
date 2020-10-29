@@ -4,6 +4,8 @@ project(KochSnowflake VERSION 1.0)
 file(GLOB THIS_DIR
     "*.hpp"
     "*.cpp"
+    "common/shader.hpp"
+    "common/shader.cpp"
 )
 add_executable(${PROJECT_NAME} ${THIS_DIR})
 
