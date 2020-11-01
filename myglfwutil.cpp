@@ -99,7 +99,7 @@ MyGlfwUtil::~MyGlfwUtil(){
 }
 
 void MyGlfwUtil::create(GLuint width, GLuint height){
-    window = glfwCreateWindow(640, 480, window_title.c_str(), NULL, NULL);
+    window = glfwCreateWindow(width, height, window_title.c_str(), NULL, NULL);
     if (!window){
         glfwTerminate();
         throw "Failed to create a Window!";

@@ -44,7 +44,7 @@ Shader::Shader(std::string vertexPath,std::string fragmentPath){
 
         //read file buffer contents into streams
         vShaderStraem << vShaderFile.rdbuf();
-        fShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
 
         //close file handlers
         vShaderFile.close();

@@ -20,7 +20,7 @@ class MyGlfwUtil {
         MyGlfwUtil(std::string title_i = "GLFW Window");
         ~MyGlfwUtil();
         GLFWwindow* window;
-        void create(GLuint width = 640, GLuint height = 400);
+        void create(GLuint width = 640, GLuint height = 480);
         GLenum initGlew();
         void createHints();
         void makeContextCurrent();
