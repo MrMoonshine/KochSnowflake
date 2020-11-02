@@ -5,7 +5,9 @@ file(GLOB THIS_DIR
     "*.hpp"
     "*.cpp"
     "common/shader.hpp"
-    "common/shader.cpp"
+	"common/shader.cpp"
+	"MmGL/*.hpp"
+	"MmGL/*.cpp"
 )
 add_executable(${PROJECT_NAME} ${THIS_DIR})
 
