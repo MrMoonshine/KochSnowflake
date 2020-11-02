@@ -5,10 +5,19 @@
 #include "myglfwutil.hpp"
 #include "vao_util.hpp"
 
-VAO::VAO(GLfloat *buffer_data_i, GLuint length_i){
-    buffer_size = length_i;
-    buffer_data = buffer_data_i;
+std::vector<GLfloat> VAO::arr2vec(GLfloat *ptr_i, GLuint size_i){
+    std::vector<GLfloat> v_o;
+    for(GLuint a = 0; a < size_i/sizeof(GLfloat); a++){
+        v_o.push_back(*(ptr_i + a));
+    }
+    return v_o;
 }
+
+VAO::VAO(std::vector<GLfloat> v_i){
+    buffer_vector = v_i;
+}
+
+VAO::VAO(GLfloat *buffer_data_i, GLuint length_i) : VAO(arr2vec(buffer_data_i,length_i)){}
 
 VAO::~VAO(){
     // Cleanup VBO
@@ -20,9 +29,12 @@ VAO::~VAO(){
 }
 
 void VAO::build(){
+    GLfloat arr[buffer_vector.size()];
+    std::copy(buffer_vector.begin(),buffer_vector.end(),arr);
+
     glGenBuffers(1,&buffer);
     glBindBuffer(GL_ARRAY_BUFFER,buffer);
-    glBufferData(GL_ARRAY_BUFFER, buffer_size, buffer_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(arr), arr, GL_STATIC_DRAW);
 }
 
 void VAO::draw(){
@@ -60,6 +72,15 @@ void VAO::setColorbuffer(std::vector<Color> buff_i){
     color_vector = buff_i;
 }
 
+void VAO::singleColor(Color color_i){
+    std::vector<Color> v_n;
+    for(GLuint n = 0; n < buffer_vector.size()/3; n++){
+        v_n.push_back(color_i);
+    }
+    color_vector = v_n;
+    setColor();
+}
+
 std::vector<GLfloat> VAO::color_vector_float(){
     std::vector<GLfloat> outvec;
     for(Color x : color_vector){
@@ -79,6 +100,22 @@ void VAO::setColor(){
     glBindBuffer(GL_ARRAY_BUFFER,colorbuffer);
     glBufferData(GL_ARRAY_BUFFER,sizeof(colorArr),colorArr,GL_STATIC_DRAW);
 
+    //std::cout << "Buffersize: " << color_buffer_size << " ID: " << colorbuffer << std::endl;
+}
+
+void VAO::showBuffers(){
+    static const std::string fullLine = "--------------------------------------------------";
+    std::cout <<  "Colors" << std::endl << fullLine << std::endl;
+    std::cout <<  "Buffer Size:\t\t" << color_vector.size() << std::endl;
+    std::cout << fullLine << std::endl;
+
+    std::cout <<  "Vertices" << std::endl << fullLine << std::endl;
+    std::cout <<  "Buffer Size:\t\t" << buffer_vector.size() * sizeof(GLfloat) << std::endl;
+    std::cout << fullLine << std::endl;
+
+    /*for(GLuint a = 0; a<buffer_size/sizeof(GLfloat); a++){
+        std::cout << "element " << a << ": " << *(buffer_data + a) << std::endl;
+    }*/
     //std::cout << "Buffersize: " << color_buffer_size << " ID: " << colorbuffer << std::endl;
 }
 

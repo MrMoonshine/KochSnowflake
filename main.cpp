@@ -4,10 +4,11 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "myglfwutil.hpp"
-#include "vao_util.hpp"
+//#include "myglfwutil.hpp"
+//#include "vao_util.hpp"
 #include <MmGL/shader.hpp>
 #include <MmGL/input.hpp>
+#include "snowflake.hpp"
 #include <time.h>
 //#include "SDL.h"
 //using namespace glm;
@@ -17,6 +18,7 @@
 #define MY_FRAGMENT_SHADER "ColorFragmentShader.glsl"
 
 int main(void){
+	//std::cout << "Snowflake Main Test: " << oida.test << std::endl;
     // An array of 3 vectors which represents 3 vertices
 	// Our vertices. Tree consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
 	// A cube has 6 faces with 2 triangles each, so this makes 6*2=12 triangles, and 12*3 vertices
@@ -60,9 +62,7 @@ int main(void){
 	};
 
     Color my_pink(198,33,104);
-    //Color my_yellow(1,1,0);
-    //Color my_green(0,0.5,0);
-    Color my_blue(0,0,0.5);
+	Color my_grey(38,38,38);
 
     std::vector<Color> v_n;
     //Generate A color for each vertex
@@ -72,8 +72,8 @@ int main(void){
         v_n.push_back(Color(rand() % 256,rand() % 256,rand() % 256));
     }
 
-    std::cout << "Color Vector Size: " << v_n.size() << std::endl;
-    std::cout << "Number of Cube Vertices: " << sizeof(g_vertex_buffer_data)/sizeof(GLfloat)/3 << std::endl;
+    //std::cout << "Color Vector Size: " << v_n.size() << std::endl;
+    //std::cout << "Number of Cube Vertices: " << sizeof(g_vertex_buffer_data)/sizeof(GLfloat)/3 << std::endl;
 
     MyGlfwUtil mgu(WINDOW_TITLE);
     std::cout << "Hello World! Oida!" << std::endl;
@@ -84,7 +84,7 @@ int main(void){
     // Ensure we can capture the escape key being pressed below
 	glfwSetInputMode(mgu.window, GLFW_STICKY_KEYS, GL_TRUE);
 
-    mgu.setBackgroundColor(my_pink);
+    mgu.setBackgroundColor(my_grey);
 
 	Input uinp(mgu.window);
 
@@ -105,6 +105,10 @@ int main(void){
     vao.setColorbuffer(v_n);
     vao.setColor();
 
+	Snowflake koch;
+	koch.build();
+	koch.singleColor(my_pink);
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(mgu.window)){
         /* Render here */
@@ -122,6 +126,7 @@ int main(void){
 
         glUniformMatrix4fv(MatrixID,1,GL_FALSE,&MVP[0][0]);
 		vao.draw();
+		koch.draw();
         
         /* Swap front and back buffers */
         glfwSwapBuffers(mgu.window);
