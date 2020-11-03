@@ -16,6 +16,7 @@
 #define WINDOW_TITLE "GLFW Window!"
 #define MY_VERTEX_SHADER "TransformVertexShader.glsl"
 #define MY_FRAGMENT_SHADER "ColorFragmentShader.glsl"
+#define COLORFUL GL_TRUE
 
 int main(void){
 	//std::cout << "Snowflake Main Test: " << oida.test << std::endl;
@@ -66,7 +67,7 @@ int main(void){
 
     std::vector<Color> v_n;
     //Generate A color for each vertex
-    srand(time(NULL));
+    
 
     for(GLuint n = 0; n < 36; n++){;
         v_n.push_back(Color(rand() % 256,rand() % 256,rand() % 256));
@@ -105,9 +106,14 @@ int main(void){
     vao.setColorbuffer(v_n);
     vao.setColor();
 
-	Snowflake koch;
+	Snowflake koch(2,3);
 	koch.build();
+	if(COLORFUL)
+	koch.randomizeVertexColors();
+	else
 	koch.singleColor(my_pink);
+
+	//koch.showBuffers();
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(mgu.window)){

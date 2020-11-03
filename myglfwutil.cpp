@@ -2,6 +2,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <time.h>
 #include "myglfwutil.hpp"
 #include "vao_util.hpp"
 
@@ -81,6 +82,16 @@ void VAO::singleColor(Color color_i){
     setColor();
 }
 
+void VAO::randomizeVertexColors(){
+    srand(time(NULL));
+    std::vector<Color> v_n;
+    for(GLuint n = 0; n < buffer_vector.size()/3; n++){
+        v_n.push_back(Color(rand()%256,rand()%256,rand()%256));
+    }
+    color_vector = v_n;
+    setColor();
+}
+
 std::vector<GLfloat> VAO::color_vector_float(){
     std::vector<GLfloat> outvec;
     for(Color x : color_vector){
@@ -111,6 +122,8 @@ void VAO::showBuffers(){
 
     std::cout <<  "Vertices" << std::endl << fullLine << std::endl;
     std::cout <<  "Buffer Size:\t\t" << buffer_vector.size() * sizeof(GLfloat) << std::endl;
+    for(auto a : buffer_vector)
+    std::cout << a << std::endl;
     std::cout << fullLine << std::endl;
 
     /*for(GLuint a = 0; a<buffer_size/sizeof(GLfloat); a++){

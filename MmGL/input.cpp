@@ -83,6 +83,13 @@ void Input::computeMatrices(){
     if(glfwGetKey(window,GLFW_KEY_A) == GLFW_PRESS)
     position -= right * deltaTime * MOVEMENT_SPEED;
 
+    //fly up
+    if(glfwGetKey(window,GLFW_KEY_SPACE) == GLFW_PRESS)
+    position += up * deltaTime * MOVEMENT_SPEED;
+    //fly down
+    if(glfwGetKey(window,GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    position -= up * deltaTime * MOVEMENT_SPEED;
+
     //Field of view (FOV)
     static GLfloat FoV = INITIAL_FOV;
 

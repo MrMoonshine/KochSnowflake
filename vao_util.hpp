@@ -19,6 +19,7 @@ class VAO {
         void build();
         void draw();
         void singleColor(Color color_i);
+        void randomizeVertexColors();
         void setColorbuffer(std::vector<Color> buff_i);
         void setColor();
         void showBuffers();
