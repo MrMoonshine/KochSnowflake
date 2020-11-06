@@ -16,7 +16,9 @@
 #define WINDOW_TITLE "GLFW Window!"
 #define MY_VERTEX_SHADER "TransformVertexShader.glsl"
 #define MY_FRAGMENT_SHADER "ColorFragmentShader.glsl"
-#define COLORFUL GL_TRUE
+#define COLORFUL GL_FALSE
+#define SNOWFLAKE_ITERATIONS 10
+#define SNOWFLAKE_SIZE 12
 
 int main(void){
 	//std::cout << "Snowflake Main Test: " << oida.test << std::endl;
@@ -75,9 +77,8 @@ int main(void){
 
     //std::cout << "Color Vector Size: " << v_n.size() << std::endl;
     //std::cout << "Number of Cube Vertices: " << sizeof(g_vertex_buffer_data)/sizeof(GLfloat)/3 << std::endl;
-
+	std::cout << "Created random cube Colors" << std::endl;
     MyGlfwUtil mgu(WINDOW_TITLE);
-    std::cout << "Hello World! Oida!" << std::endl;
     //mgu.createHints();
     mgu.create();
     mgu.makeContextCurrent();
@@ -87,10 +88,14 @@ int main(void){
 
     mgu.setBackgroundColor(my_grey);
 
+	std::cout << "Created GLFW-Window" << std::endl;
+
 	Input uinp(mgu.window);
+	std::cout << "Loaded User Input" << std::endl;
 
 	Shader shader1(MY_VERTEX_SHADER,MY_FRAGMENT_SHADER);
-	
+	std::cout << "Created shaders" << std::endl;
+
 	GLuint MatrixID = glGetUniformLocation(shader1.id,"MVP");
 
 
@@ -99,14 +104,14 @@ int main(void){
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
     VAO vao((GLfloat*)g_vertex_buffer_data,sizeof(g_vertex_buffer_data));
     vao.build();
     vao.setColorbuffer(v_n);
     vao.setColor();
 
-	Snowflake koch(2,3);
+	Snowflake koch(SNOWFLAKE_SIZE,SNOWFLAKE_ITERATIONS);
 	std::cout << "Oida Oida" << std::endl;
 	koch.build();
 	if(COLORFUL)

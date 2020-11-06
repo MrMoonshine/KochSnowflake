@@ -30,7 +30,9 @@ VAO::~VAO(){
 }
 
 void VAO::build(){
+    std::cout << "Building..." << std::endl;
     GLfloat arr[buffer_vector.size()];
+    std::cout << "Arr size = " << sizeof(arr)/sizeof(GLfloat) << std::endl;
     std::copy(buffer_vector.begin(),buffer_vector.end(),arr);
 
     glGenBuffers(1,&buffer);
@@ -63,7 +65,8 @@ void VAO::draw(){
 		);
 
 		// Draw the triangle !
-		glDrawArrays(GL_TRIANGLES, 0, 12*3); // 12*3 indices starting at 0 -> 12 triangles
+        //std::cout << "Draw: " << buffer_vector.size()/9 << std::endl;
+		glDrawArrays(GL_TRIANGLES, 0, buffer_vector.size()/3); // buffer space /3 because each vertex has 3 points
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

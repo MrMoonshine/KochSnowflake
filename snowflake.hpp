@@ -11,8 +11,8 @@
 //using namespace VAO;
 
 #define X_ORIGIN 0.0f
-#define Y_ORIGIN 0.0f
-#define Z_ORIGIN 0.0f
+#define Y_ORIGIN 2.0f
+#define Z_ORIGIN 3.0f
 #define PAD_THICC 1.0f
 //Vector placement to convert from
 //Carthesian to spherical coordinates
@@ -38,7 +38,6 @@ class Triangle{
         std::vector<GLfloat> getA();
         std::vector<GLfloat> getB();
         std::vector<GLfloat> getC();
-        std::vector<GLfloat> getCenter();
         GLfloat getHeight();
         GLfloat getSide();
         std::vector<GLfloat> fullVertex();
@@ -76,14 +75,18 @@ namespace vec3_2d{
 
     //This function will get a starting point and a vector.
     //The new Triangle will be appended on the left side of the vector 
-    Triangle getNext(vector<GLfloat> point_i, Vec2p5 vector_i);
+    Triangle getNext(vector<GLfloat> point_i, Vec2p5 vector_i, GLuint direction_i = left);
+    vector<Triangle> build_branch(vector<GLfloat> point_i, Vec2p5 vector_i,GLuint iteration_i);
+
+    GLuint vertices_amount(GLuint iteration_i);
+    vector<GLfloat> triangles2floatvec(vector<Triangle> a);
 }
 
 class Snowflake: public VAO{
     private:
         std::vector<GLfloat> initialTrianglePad(GLuint s_i);
         GLfloat base_width;
-        Triangle base;
+        Triangle *base;
     public:
         Snowflake(GLuint base_width_i = 2,GLuint depth_i = 2);
         using VAO::VAO;
