@@ -107,6 +107,7 @@ int main(void){
     vao.setColor();
 
 	Snowflake koch(2,3);
+	std::cout << "Oida Oida" << std::endl;
 	koch.build();
 	if(COLORFUL)
 	koch.randomizeVertexColors();

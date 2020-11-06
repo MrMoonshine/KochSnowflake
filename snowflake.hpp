@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
@@ -17,7 +18,9 @@
 //Carthesian to spherical coordinates
 #define T_AMOUNT 0
 #define T_THETA 1
-#define T_PHI 2
+#define T_PHI 
+
+#define TERMINATE_BRANCH GL_TRUE
 
 class Triangle{
     private:
@@ -31,6 +34,7 @@ class Triangle{
         Triangle(std::vector<GLfloat> a_i,std::vector<GLfloat> b_i,std::vector<GLfloat> c_i);
         Triangle(std::vector<std::vector<GLfloat>> v_i);
         void build(std::vector<GLfloat> a_i,std::vector<GLfloat> b_i,std::vector<GLfloat> c_i);
+        void build(std::vector<GLfloat> v_i);
         std::vector<GLfloat> getA();
         std::vector<GLfloat> getB();
         std::vector<GLfloat> getC();
@@ -40,39 +44,46 @@ class Triangle{
         std::vector<GLfloat> fullVertex();
 };
 
-struct SnowSpike{
-    Triangle base;
-    GLfloat base_angle;
-    SnowSpike* childA;
-    SnowSpike* childB;
-};
+namespace vec3_2d{
+   using std::vector; 
+   const GLuint left = GL_TRUE;
+   const GLuint right = GL_FALSE;
+
+   class Vec2p5{
+       private:
+            vector<GLfloat> myVec;
+            GLfloat r;
+            GLfloat phi;
+       public:
+            Vec2p5(vector<GLfloat> v_i);
+            Vec2p5 operator+(const Vec2p5 &a);
+            Vec2p5 operator-(const Vec2p5 &a);
+            Vec2p5 operator/(const GLfloat &a);
+            Vec2p5 operator*(const GLfloat &a);
+            GLboolean operator<(const GLfloat &a);
+            GLboolean operator>(const GLfloat &a);
+            GLboolean operator==(const GLfloat &a);
+            GLboolean operator<=(const GLfloat &a);
+            GLboolean operator>=(const GLfloat &a);
+            Vec2p5 normalV2p5(Vec2p5 a);
+            vector<GLfloat> getVector();
+            GLfloat getLength();
+            GLfloat getAngle();
+   };
+
+    void dump(vector<GLfloat> v_i); 
+    vector<GLfloat> normalVector(vector<GLfloat> v_i, GLuint direction_i = left);
+
+    //This function will get a starting point and a vector.
+    //The new Triangle will be appended on the left side of the vector 
+    Triangle getNext(vector<GLfloat> point_i, Vec2p5 vector_i);
+}
 
 class Snowflake: public VAO{
     private:
         std::vector<GLfloat> initialTrianglePad(GLuint s_i);
-        //This function returns the inner radius of a triangle
-        //all sides must be the same
-        GLfloat centerdistance(GLfloat side_i);
-        //This function returns the height of a triangle
-        GLfloat height(GLfloat side_i);
-        //returns the distance from the center to the new children corner
-        GLfloat childCornerDist(GLfloat side_i);
-        //This function returns the center of the next 
-        //middle_i is the center of the parent
-        //dist_i is distance to be added e.g height to center * 1.5 for new center
-        //angle_i is the angle whrere the next triangle should be created
-        std::vector<GLfloat> nextHop(std::vector<GLfloat> middle_i ,GLfloat dist_i, GLfloat angle_i);
-        //Calls the function above and calculates the triangle
-        //side_i is the length of the parent's side
-        Triangle createChild(std::vector<GLfloat> middle_i ,GLfloat side_i, GLfloat angle_i);
-        std::vector<GLfloat> center;
-        GLuint vBuffSize = 0;
-        GLfloat vBuff;
-        GLuint approxLvl = 0;
-        GLuint depth = 0;
         GLfloat base_width;
         Triangle base;
-        std::vector<SnowSpike> spikes;
     public:
         Snowflake(GLuint base_width_i = 2,GLuint depth_i = 2);
         using VAO::VAO;
