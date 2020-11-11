@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h> 
 #include <vector>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -105,11 +106,51 @@ Triangle vec3_2d::getNext(vector<GLfloat> point_i, Vec2p5 vector_i, GLuint direc
     return Triangle(p1_o,p2_o,p3_o);
 }
 
+std::vector<Triangle> vec3_2d::genNextIter(vector<GLfloat> point_i, Vec2p5 vector_i, GLuint iter_i){
+    GLfloat divider = pow(3,iter_i);
+    vector<Vec2p5> points_t,points = {Vec2p5(point_i)};
+    Vec2p5 vector_s = vector_i;
+    vector<Triangle> triangles_o;
+
+    for(GLuint a = 0; a < iter_i ; a++){
+        for(auto b : points){
+            triangles_o.push_back(getNext(b.getVector(),vector_s));
+        }
+        vector_s = vector_s / 3.0f;
+        points_t = points;
+        for(auto c : points_t){
+            points.push_back(c+ vector_s*2.0f);
+        }
+    }
+    return triangles_o;
+}
+
+std::vector<Triangle> vec3_2d::orderBySide(vector<Triangle> v_i){
+    Triangle cache_t;
+
+    for(GLuint a = 0; a < v_i.size() ; a++){
+        for(GLuint b = 0; b < v_i.size() - 1 ; b++){
+          if(v_i[b].getSide() < v_i[b + 1].getSide()){
+              cache_t = v_i[b];
+              v_i[b] = v_i[b + 1];
+              v_i[b + 1] = cache_t;
+          }  
+        }
+    }
+    
+    return v_i;
+}
+
 std::vector<Triangle> vec3_2d::build_branch(vector<GLfloat> point_i, Vec2p5 vector_i,GLuint iteration_i){
     Vec2p5 point_s(point_i); //just for convenience
-    GLuint verticesAmount = vertices_amount(iteration_i);
     //The first triangle will be the base from which every calculation starts
-    vector<Triangle> openSet = {getNext(point_i,vector_i)};
+    std::cout << "here 1" << std::endl;
+    vector<Triangle> openSet = genNextIter(point_i,vector_i,iteration_i);
+    vector<Triangle> triangleCache;
+    GLuint verticesAmount = vertices_amount(iteration_i);
+    std::cout << "I have " << verticesAmount << " vertices" << std::endl;
+    std::cout << "here 2" << std::endl;
+    //vector<Triangle> openSet = {getNext(point_i,vector_i)};
     vector<Triangle> closedSet;
 
     //Create infinite Triangles until you reach your limit of Vertices
@@ -117,10 +158,15 @@ std::vector<Triangle> vec3_2d::build_branch(vector<GLfloat> point_i, Vec2p5 vect
         Vec2p5 start_L(openSet[0].getC());
         Vec2p5 start_R(openSet[0].getA());
         Vec2p5 redundantCorner(openSet[0].getB());
-        openSet.push_back(getNext(start_L.getVector(),(start_R - start_L)));
-        openSet.push_back(getNext(start_R.getVector(),(redundantCorner - start_R)));
+        triangleCache = genNextIter(start_L.getVector(),(start_R - start_L),iteration_i);
+        openSet.insert(openSet.end(),triangleCache.begin(),triangleCache.end());
+        triangleCache = genNextIter(start_R.getVector(),(redundantCorner - start_R),iteration_i);
+        openSet.insert(openSet.end(),triangleCache.begin(),triangleCache.end());
+        //openSet.push_back(getNext(start_L.getVector(),(start_R - start_L)));
+        //openSet.push_back(getNext(start_R.getVector(),(redundantCorner - start_R)));
         closedSet.push_back(openSet[0]);
         openSet.erase(openSet.begin());
+        openSet = orderBySide(openSet);
     }
 
     return closedSet;
@@ -146,7 +192,7 @@ std::vector<GLfloat> vec3_2d::normalVector(vector<GLfloat> v_i, GLuint direction
 GLuint vec3_2d::vertices_amount(GLuint iteration_i){
     GLuint numberOfVertices = 0;
     for(GLuint i=0;i<iteration_i;i++)
-    numberOfVertices += 1 << i;
+    numberOfVertices += pow(4,i);
 
     return numberOfVertices;
 }
@@ -255,6 +301,7 @@ GLfloat Triangle::getHeight(){
 }
 
 GLfloat Triangle::getSide(){
+    side = (vec3_2d::Vec2p5(a) - vec3_2d::Vec2p5(b)).getLength();
     return side;
 }
 

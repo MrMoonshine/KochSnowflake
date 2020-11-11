@@ -13,11 +13,11 @@
 //#include "SDL.h"
 //using namespace glm;
 
-#define WINDOW_TITLE "GLFW Window!"
+#define WINDOW_TITLE "Koch Snowflake"
 #define MY_VERTEX_SHADER "TransformVertexShader.glsl"
 #define MY_FRAGMENT_SHADER "ColorFragmentShader.glsl"
-#define COLORFUL GL_FALSE
-#define SNOWFLAKE_ITERATIONS 10
+#define COLORFUL GL_TRUE
+#define SNOWFLAKE_ITERATIONS 3
 #define SNOWFLAKE_SIZE 12
 
 int main(void){
